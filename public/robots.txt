@@ -1,2 +1,3 @@
 User-agent: *
 Disallow:
+Sitemap: https://pokemon-draw-next-js-14-kpcu.vercel.app/sitemap.xml
