@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
-import Search from "./search";
+
 import { ClipLoader } from "react-spinners";
+import Search from "./Search";
 
 export default function SearchPage() {
   return (

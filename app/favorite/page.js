@@ -12,43 +12,22 @@ function Favorite() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchFavoritePokemons = async () => {
-      setLoading(true);
-      try {
-        const results = await Promise.all(
-          favoriteIds.map(async (id) => {
-            const res = await fetch(`/api/pokemon/${id}`);
-            if (!res.ok) {
-              throw new Error(`포켓몬 ${id} 요청 실패`);
-            }
-            return await res.json();
-          })
-        );
-        setFavoritePokemons(results);
-      } catch (error) {
-        console.error("찜한 포켓몬 불러오기 실패:", error);
-        setFavoritePokemons([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchFavorites = async () => {
+    if (favoriteIds.length === 0) return setFavoritePokemons([]);
 
-    if (favoriteIds.length > 0) {
-      fetchFavoritePokemons();
-    } else {
-      setFavoritePokemons([]);
-      setLoading(false);
+    try {
+      const res = await fetch(`/api/pokemon/bulk?ids=${favoriteIds.join(",")}`);
+      if (!res.ok) throw new Error("Network response was not ok");
+      const data = await res.json();
+      setFavoritePokemons(data);
+    } catch (err) {
+      console.error("찜한 포켓몬 불러오기 실패", err);
+      setFavoritePokemons([]); // 안전하게 초기화
     }
-  }, [favoriteIds]);
+  };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center mt-20">
-        <ClipLoader color="#333" size={40} />
-        <p className="mt-4 text-gray-600">찜한 포켓몬을 불러오는 중...</p>
-      </div>
-    );
-  }
+  fetchFavorites();
+}, [favoriteIds]);
 
   return (
     <section className="p-6 max-w-5xl mx-auto">
